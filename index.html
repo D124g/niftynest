@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NiftyNest - প্রিমিয়াম অনলাইন শপ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS ফাইল লিংক -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- নেভিগেশন বার -->
+    <header>
+        <div class="logo">Nifty<span>Nest</span></div>
+        
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="পণ্য খুঁজুন..." onkeyup="filterProducts()">
+        </div>
+
+        <button class="cart-btn" onclick="openCart()">
+            🛒 অর্ডার লিস্ট <span class="cart-count" id="cart-count">0</span>
+        </button>
+    </header>
+
+    <!-- হিরো ব্যানার -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="badge">✨ সেরা মানের নিশ্চয়তা</span>
+            <h1>NiftyNest-এ আপনাকে স্বাগতম</h1>
+            <p>আপনার পছন্দের সেরা পণ্যটি বেছে নিন এবং ঘরে বসেই অর্ডার করুন</p>
+            <a href="#products-section" class="hero-btn">পণ্য দেখুন ↓</a>
+        </div>
+    </section>
+
+    <!-- প্রোডাক্ট সেকশন -->
+    <div class="container" id="products-section">
+        <div class="section-header">
+            <h2 class="section-title">আমাদের পণ্যসমূহ</h2>
+            <!-- ক্যাটাগরি বাটন -->
+            <div class="category-tabs">
+                <button class="cat-btn active" onclick="filterCategory('all', this)">সব পণ্য</button>
+                <button class="cat-btn" onclick="filterCategory('gadget', this)">গ্যাজেট</button>
+                <button class="cat-btn" onclick="filterCategory('fashion', this)">ফ্যাশন</button>
+                <button class="cat-btn" onclick="filterCategory('lifestyle', this)">লাইফস্টাইল</button>
+            </div>
+        </div>
+
+        <div class="product-grid" id="product-list">
+            <!-- JS থেকে পণ্য লোড হবে -->
+        </div>
+    </div>
+
+    <!-- অর্ডার ও চেকআউট মডাল -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeCart()">&times;</span>
+            <h2 class="modal-title">আপনার অর্ডার সামারি</h2>
+            
+            <div id="cart-items-container"></div>
+
+            <!-- ডেলিভারি এরিয়া সিলেকশন -->
+            <div class="delivery-selector">
+                <label>ডেলিভারি এলাকা নির্বাচন করুন:</label>
+                <select id="delivery-area" onchange="updateCartUI()">
+                    <option value="60">ঢাকার ভেতরে (৬০ ৳)</option>
+                    <option value="120">ঢাকার বাইরে (১২০ ৳)</option>
+                </select>
+            </div>
+
+            <div class="total-box">
+                <span>সর্বমোট বিল:</span>
+                <span id="total-price">0 ৳</span>
+            </div>
+
+            <!-- অর্ডার ফর্ম -->
+            <form id="order-form" onsubmit="sendOrderToWhatsApp(event)">
+                <div class="form-group">
+                    <label>আপনার নাম *</label>
+                    <input type="text" id="cust-name" placeholder="সম্পূর্ণ নাম লিখুন" required>
+                </div>
+
+                <div class="form-group">
+                    <label>মোবাইল নম্বর *</label>
+                    <input type="tel" id="cust-phone" placeholder="01XXXXXXXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label>ডেলিভারি ঠিকানা (Location) *</label>
+                    <textarea id="cust-address" rows="2" placeholder="বাসা নং, রোড, থানা ও জেলার নাম লিখুন" required></textarea>
+                </div>
+
+                <!-- বিকাশ পেমেন্ট বক্স -->
+                <div class="bkash-box">
+                    <h4>📱 বিকাশ পেমেন্ট (Send Money)</h4>
+                    <p>নিচের বিকাশ পার্সোনাল নম্বরে মোট বিল সেন্ড মানি করুন এবং নিচে তথ্য দিন:</p>
+                    <div class="bkash-copy-row">
+                        <span class="bkash-number" id="bkash-num">01570237061</span>
+                        <button type="button" class="copy-btn" onclick="copyBkash()">কপি করুন</button>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label>যে নম্বর থেকে বিকাশ করেছেন *</label>
+                        <input type="tel" id="bkash-sender" placeholder="01XXXXXXXXX" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>বিকাশ Transaction ID (TrxID) *</label>
+                        <input type="text" id="bkash-trxid" placeholder="যেমন: 9H7G6F5D4S" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="confirm-order-btn">✅ অর্ডার কনফার্ম করুন (WhatsApp)</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- স্মুথ নোটিফিকেশন (Toast) -->
+    <div id="toast" class="toast">পণ্যটি কার্টে যোগ হয়েছে!</div>
+
+    <footer>
+        <p>&copy; 2026 <strong>NiftyNest</strong>. সর্বস্বত্ব সংরক্ষিত।</p>
+        <p style="font-size: 14px; margin-top: 5px;">হোয়াটসঅ্যাপ হেল্পলাইন: 01988940955</p>
+    </footer>
+
+    <!-- JavaScript ফাইল লিংক -->
+    <script src="script.js"></script>
+</body>
+</html>
